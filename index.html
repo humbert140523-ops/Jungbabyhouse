@@ -6,23 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Jung Baby House 新生托育基本資料系統</title>
   
-  <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#FDFBF7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Jung Baby">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238A9A86'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='%23FDFBF7'>👶</text></svg>">
 
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Signature Pad CDN -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
-  <!-- Google Fonts: Noto Sans TC & Quicksand -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
@@ -71,7 +64,6 @@
     }
     input[type="checkbox"]:checked + .checkbox-tile::before { content: "✓ "; margin-right: 6px; font-weight: bold; font-size: 1rem; }
 
-    /* 改進：改為三欄式排版（手機 2 欄、平板以上 3 欄），絕不刪除任何內容 */
     .checkbox-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -812,7 +804,7 @@
 
   </form>
 
-  <!-- 固定底部導覽列（提供預覽、下載PDF、一鍵傳Line給老師） -->
+  <!-- 固定底部導覽列 -->
   <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-cream-200 p-3 z-50 no-print">
     <div class="max-w-4xl mx-auto flex items-center justify-between gap-2">
       <button type="button" onclick="openPreviewModal()" class="flex-1 py-3 px-2 rounded-2xl bg-cream-200 text-warmGray font-bold text-xs sm:text-sm flex items-center justify-center gap-1 active:scale-95 transition min-h-[46px]">
@@ -837,7 +829,7 @@
     </div>
   </div>
 
-  <!-- 預覽彈出視窗 (Modal) -->
+  <!-- 預覽彈出視窗 -->
   <div id="previewModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300 no-print">
     <div class="bg-white rounded-3xl p-6 md:p-8 max-w-2xl w-full max-h-[85vh] flex flex-col shadow-soft transform scale-95 transition-transform duration-300">
       <div class="flex items-center justify-between pb-4 border-b border-cream-200">
@@ -866,7 +858,7 @@
     lucide.createIcons();
 
     const form = document.getElementById('babyForm');
-    const LOCAL_STORAGE_KEY = 'jung_baby_house_v10_full_data';
+    const LOCAL_STORAGE_KEY = 'jung_baby_house_v11_full_data';
     const canvas = document.getElementById('signature-pad');
     let signaturePad;
 
@@ -974,7 +966,7 @@
       }
     }
 
-    // 收集所有填寫內容整理成給老師看的簡明摘要文字
+    // 完整中文對照表與強制中文解析
     function getSummaryText() {
       const formData = new FormData(form);
       let text = "【 Jung Baby House 新生托育基本資料 】\n";
@@ -997,12 +989,40 @@
         parent2_rel: '關係',
         parent2_phone: '次要聯絡人電話',
         address: '住家地址',
+        supplies: '準備用品',
         supplies_other: '其他準備用品',
         feeding_type: '飲食方式',
         milk_amount: '奶量與間隔',
         nap_habit: '白天小睡習慣',
+        sleep_soothe: '安撫入睡方式',
+        solid_food: '已嘗試副食品',
+        food_texture: '食物型態',
+        other_solid_foods: '其他已嘗試食物',
         allergies: '過敏史',
+        skin_condition: '皮膚狀況',
         medical_history: '病史紀錄',
+        personality: '氣質性格',
+        teacher_knows: '老師需要知道的小事情',
+        teacher_knows_other: '其他事項說明',
+        current_milk_ml: '目前奶量(ml)',
+        daily_milk_times: '每日喝奶次數',
+        baby_food_g: '目前副食品量(g)',
+        current_height_cm: '目前身高(cm)',
+        current_weight_kg: '目前體重(kg)',
+        diaper_size: '尿布尺寸',
+        pacifier_use: '使用奶嘴',
+        language: '慣用語言',
+        language_other: '其他語言說明',
+        toilet_training: '如廁狀況',
+        special_care_notes: '特殊照顧事項',
+        prior_care: '曾否送托',
+        prior_care_experience: '送托經驗',
+        soothe_method: '哭鬧安撫方式',
+        soothe_method_other: '其他安撫方式',
+        poop_freq: '排便頻率',
+        poop_type: '便便型態',
+        eating_habit: '吃飯習慣',
+        child_traits: '孩子的小特色',
         parents_to_teacher: '給老師的話'
       };
 
@@ -1014,7 +1034,7 @@
 
       Object.keys(arraysData).forEach(key => {
         const labelName = labels[key] || key;
-        const valStr = arraysData[key].join(', ');
+        const valStr = arraysData[key].join('、');
         if (valStr.trim()) {
           text += `▪️ ${labelName}：${valStr}\n`;
         }
@@ -1027,7 +1047,6 @@
       return text;
     }
 
-    // 開啟預覽視窗
     function openPreviewModal() {
       const summary = getSummaryText();
       document.getElementById('previewContent').innerText = summary;
@@ -1040,7 +1059,6 @@
       modal.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    // 一鍵複製給老師
     function copyDataForLine() {
       const privacy = document.getElementById('privacy_agree');
       if (!privacy || !privacy.checked) {
@@ -1060,14 +1078,13 @@
       textarea.select();
       try {
         document.execCommand('copy');
-        alert('✅ 資料已成功複製！\n\n您可以直接前往 Line 貼上並傳送給老師。');
+        alert('✅ 中文資料已成功複製！\n\n您可以直接前往 Line 貼上並傳送給老師。');
       } catch (err) {
         alert('複製失敗，請手動複製。');
       }
       document.body.removeChild(textarea);
     }
 
-    // 一鍵傳送至 Line
     function sendViaLine() {
       const privacy = document.getElementById('privacy_agree');
       if (!privacy || !privacy.checked) {
@@ -1085,7 +1102,6 @@
       window.open(`https://line.me/R/msg/text/?${encodedText}`, '_blank');
     }
 
-    // 瀏覽器原生列印 / 另存 PDF
     function triggerNativePrint() {
       const accordions = document.querySelectorAll('.accordion-content');
       accordions.forEach(acc => acc.classList.remove('hidden'));
@@ -1109,5 +1125,4 @@
   </script>
 </body>
 </html>
-
 
