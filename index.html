@@ -1,18 +1,30 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Jung Baby House 新生托育基本資料系統</title>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#FDFBF7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Jung Baby">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%238A9A86'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='%23FDFBF7'>👶</text></svg>">
 
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Signature Pad CDN -->
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 
+  <!-- Google Fonts: Noto Sans TC & Quicksand -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -20,66 +32,127 @@
         extend: {
           colors: {
             cream: { 50: '#FDFBF7', 100: '#F7F3EB', 200: '#EFE7DA' },
-            sage: { 100: '#E1E8E3', 500: '#8A9A86', 600: '#6B7C67' },
+            milk: { DEFAULT: '#E6DCCB', dark: '#C8B9A0' },
+            sage: { 50: '#F2F5F3', 100: '#E1E8E3', 500: '#8A9A86', 600: '#6B7C67' },
             khaki: { DEFAULT: '#C2B29A', dark: '#A39178' },
             warmGray: '#5C554E'
           },
-          borderRadius: { '2xl': '1.25rem', '3xl': '1.75rem' }
+          fontFamily: { sans: ['"Noto Sans TC"', 'Quicksand', 'sans-serif'] },
+          borderRadius: { '2xl': '1.25rem', '3xl': '1.75rem' },
+          boxShadow: {
+            'soft': '0 8px 30px rgba(218, 208, 192, 0.25)',
+            'card': '0 4px 20px rgba(184, 172, 155, 0.12)',
+            'inner-soft': 'inset 0 2px 4px rgba(0, 0, 0, 0.03)'
+          }
         }
       }
     }
   </script>
 
   <style type="text/css">
-    body { background-color: #FDFBF7; color: #5C554E; font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
-    .custom-input { background-color: #F7F3EB; border: 2px solid transparent; transition: all 0.2s ease; color: #5C554E; font-size: 1rem; padding: 0.75rem 1rem; border-radius: 1rem; width: 100%; }
-    .custom-input:focus { outline: none; background-color: #FFFFFF; border-color: #8A9A86; }
-    .checkbox-tile { display: flex; align-items: center; justify-content: center; padding: 0.75rem 0.5rem; border-radius: 1rem; background-color: #F7F3EB; border: 2px solid transparent; cursor: pointer; user-select: none; font-size: 0.95rem; font-weight: 500; color: #5C554E; text-align: center; width: 100%; min-height: 48px; }
-    input[type="checkbox"]:checked + .checkbox-tile, input[type="radio"]:checked + .checkbox-tile { background-color: #8A9A86; border-color: #6B7C67; color: #FFFFFF; font-weight: 700; }
-    input[type="checkbox"]:checked + .checkbox-tile::before { content: "✓ "; margin-right: 4px; }
-    .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.6rem; }
-    #signature-pad { touch-action: none; }
+    body { background-color: #FDFBF7; color: #5C554E; -webkit-tap-highlight-color: transparent; }
+    .custom-input {
+      background-color: #F7F3EB; border: 2px solid transparent; transition: all 0.25s ease;
+      color: #5C554E; font-size: 1rem; padding: 0.875rem 1rem; border-radius: 1rem;
+    }
+    .custom-input:focus { outline: none; background-color: #FFFFFF; border-color: #8A9A86; box-shadow: 0 0 0 4px rgba(138, 154, 134, 0.18); }
     
+    .checkbox-tile {
+      display: flex; align-items: center; justify-content: center; padding: 0.875rem 1rem;
+      border-radius: 1rem; background-color: #F7F3EB; border: 2px solid transparent;
+      cursor: pointer; user-select: none; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.95rem; font-weight: 500; color: #5C554E; text-align: center; width: 100%; min-height: 48px; position: relative;
+    }
+    .checkbox-tile:active { transform: scale(0.96); }
+    input[type="checkbox"]:checked + .checkbox-tile,
+    input[type="radio"]:checked + .checkbox-tile {
+      background-color: #8A9A86; border-color: #6B7C67; color: #FFFFFF; font-weight: 700; box-shadow: 0 3px 10px rgba(138, 154, 134, 0.3);
+    }
+    input[type="checkbox"]:checked + .checkbox-tile::before { content: "✓ "; margin-right: 6px; font-weight: bold; font-size: 1rem; }
+
+    /* 改進：改為三欄式排版（手機 2 欄、平板以上 3 欄），絕不刪除任何內容 */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.625rem;
+    }
+    @media (min-width: 640px) {
+      .checkbox-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card-hover { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    @media (min-width: 768px) {
+      .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(218, 208, 192, 0.35); }
+    }
+    #signature-pad { touch-action: none; }
+
     @media print {
+      @page { size: A4 portrait; margin: 10mm 12mm; }
+      body { background-color: #FFFFFF !important; color: #000000 !important; font-size: 10pt; }
       .no-print { display: none !important; }
-      body { background: #fff !important; color: #000 !important; }
-      .print-card { border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 12px !important; }
+      .print-card {
+        box-shadow: none !important; border: 1px solid #E5E7EB !important;
+        break-inside: avoid; page-break-inside: avoid; margin-bottom: 10px !important; padding: 10px !important; background: #FFFFFF !important;
+      }
+      .custom-input { background: transparent !important; border: none !important; border-bottom: 1px solid #9CA3AF !important; border-radius: 0 !important; padding: 2px 0 !important; font-size: 10pt !important; }
+      .checkbox-tile { border: 1px solid #D1D5DB !important; background: transparent !important; padding: 4px 6px !important; font-size: 9pt !important; min-height: auto !important; }
+      input[type="checkbox"]:checked + .checkbox-tile,
+      input[type="radio"]:checked + .checkbox-tile { background-color: #F3F4F6 !important; border-color: #4B5563 !important; color: #000000 !important; }
+      .checkbox-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 4px !important; }
+      textarea { border: 1px solid #D1D5DB !important; background: transparent !important; }
+      .accordion-content { display: block !important; }
     }
   </style>
 </head>
-<body class="min-h-screen pb-32 pt-4 px-3 sm:px-6 max-w-3xl mx-auto">
+<body class="min-h-screen pb-36 pt-6 px-4 md:px-8 max-w-4xl mx-auto selection:bg-sage-100 selection:text-sage-600">
 
-  <header class="text-center mb-6 pt-2">
-    <div class="inline-flex items-center justify-center p-3 mb-2 bg-sage-100 text-sage-600 rounded-2xl">
-      <i data-lucide="baby" class="w-8 h-8"></i>
+  <!-- 進度條 -->
+  <div class="sticky top-0 z-40 bg-cream-50/90 backdrop-blur-md pb-3 pt-2 no-print">
+    <div class="flex items-center justify-between text-xs font-semibold text-warmGray mb-1">
+      <span id="progress-text">填寫進度</span>
+      <span id="progress-percent">0%</span>
     </div>
-    <h1 class="text-2xl font-bold tracking-wide text-warmGray">Jung Baby House</h1>
-    <p class="text-sm font-medium text-khaki-dark mt-1">新生托育基本資料系統</p>
+    <div class="w-full h-2 bg-cream-200 rounded-full overflow-hidden">
+      <div id="progress-bar" class="h-full bg-sage-500 transition-all duration-300 w-0"></div>
+    </div>
+  </div>
+
+  <!-- 頁首標題 -->
+  <header class="text-center mb-8 pt-4">
+    <div class="inline-flex items-center justify-center p-4 mb-3 bg-sage-100 text-sage-600 rounded-2xl shadow-inner-soft">
+      <i data-lucide="baby" class="w-10 h-10"></i>
+    </div>
+    <h1 class="text-2xl md:text-3xl font-bold tracking-wide text-warmGray mb-1.5">Jung Baby House</h1>
+    <p class="text-base md:text-lg font-medium text-khaki-dark tracking-wider">新生托育基本資料系統</p>
   </header>
 
-  <form id="babyForm" onsubmit="return false;" class="space-y-6">
-    <!-- 一、托育基本資訊 -->
-    <section class="bg-white rounded-3xl p-5 shadow-sm print-card border border-cream-100">
-      <div class="flex items-center gap-2 mb-4 border-b border-cream-200 pb-3">
-        <i data-lucide="calendar" class="w-5 h-5 text-khaki-dark"></i>
-        <h2 class="text-lg font-bold text-warmGray">一、托育基本資訊</h2>
+  <!-- 表單主體 -->
+  <form id="babyForm" onsubmit="return false;" class="space-y-7">
+
+    <!-- 第一區｜托育基本資訊 -->
+    <section class="bg-white rounded-3xl p-6 md:p-8 shadow-card card-hover print-card border border-cream-100">
+      <div class="flex items-center gap-3 mb-6 border-b border-cream-200 pb-4">
+        <div class="p-2.5 bg-cream-100 text-khaki-dark rounded-xl"><i data-lucide="calendar" class="w-6 h-6"></i></div>
+        <h2 class="text-xl font-bold text-warmGray">一、托育基本資訊</h2>
       </div>
-      <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <label class="block text-xs font-semibold text-warmGray mb-1">預計入托日期</label>
-          <input type="date" name="enrollment_date" class="custom-input">
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">預計入托日期</label>
+          <input type="date" name="enrollment_date" class="w-full custom-input">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-warmGray mb-1">每日預計托育時間</label>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">每日預計托育時間</label>
           <div class="flex gap-2 items-center">
-            <input type="time" name="care_time_start" class="custom-input">
-            <span class="text-khaki font-bold">至</span>
-            <input type="time" name="care_time_end" class="custom-input">
+            <input type="time" name="care_time_start" class="w-full custom-input">
+            <span class="text-khaki font-bold text-base px-1">至</span>
+            <input type="time" name="care_time_end" class="w-full custom-input">
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-warmGray mb-2">托育類型</label>
-          <div class="grid grid-cols-2 gap-2">
+        <div class="md:col-span-2">
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">托育類型</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <label class="cursor-pointer"><input type="radio" name="care_type" value="全日托" class="hidden"><div class="checkbox-tile">全日托</div></label>
             <label class="cursor-pointer"><input type="radio" name="care_type" value="日托" class="hidden"><div class="checkbox-tile">日托</div></label>
             <label class="cursor-pointer"><input type="radio" name="care_type" value="半日托" class="hidden"><div class="checkbox-tile">半日托</div></label>
@@ -89,118 +162,166 @@
       </div>
     </section>
 
-    <!-- 二、寶寶基本資料 -->
-    <section class="bg-white rounded-3xl p-5 shadow-sm print-card border border-cream-100">
-      <div class="flex items-center gap-2 mb-4 border-b border-cream-200 pb-3">
-        <i data-lucide="user" class="w-5 h-5 text-khaki-dark"></i>
-        <h2 class="text-lg font-bold text-warmGray">二、寶寶基本資料</h2>
+    <!-- 第二區｜寶寶基本資料 -->
+    <section class="bg-white rounded-3xl p-6 md:p-8 shadow-card card-hover print-card border border-cream-100">
+      <div class="flex items-center gap-3 mb-6 border-b border-cream-200 pb-4">
+        <div class="p-2.5 bg-cream-100 text-khaki-dark rounded-xl"><i data-lucide="user" class="w-6 h-6"></i></div>
+        <h2 class="text-xl font-bold text-warmGray">二、寶寶基本資料</h2>
       </div>
-      <div class="space-y-4">
-        <div class="grid grid-cols-2 gap-3">
-          <div><label class="block text-xs font-semibold text-warmGray mb-1">寶寶姓名</label><input type="text" name="baby_name" placeholder="請輸入姓名" class="custom-input" required></div>
-          <div><label class="block text-xs font-semibold text-warmGray mb-1">乳名 / 暱稱</label><input type="text" name="baby_nickname" placeholder="小名" class="custom-input"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">寶寶姓名</label>
+          <input type="text" id="baby_name" name="baby_name" placeholder="請輸入寶寶姓名" class="w-full custom-input">
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div><label class="block text-xs font-semibold text-warmGray mb-1">出生日期</label><input type="date" name="baby_dob" class="custom-input"></div>
-          <div>
-            <label class="block text-xs font-semibold text-warmGray mb-1">性別</label>
-            <div class="grid grid-cols-2 gap-2">
-              <label class="cursor-pointer"><input type="radio" name="baby_gender" value="男" class="hidden"><div class="checkbox-tile">男 👦</div></label>
-              <label class="cursor-pointer"><input type="radio" name="baby_gender" value="女" class="hidden"><div class="checkbox-tile">女 👧</div></label>
-            </div>
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">乳名 / 暱稱</label>
+          <input type="text" name="baby_nickname" placeholder="例如：小寶、糖糖" class="w-full custom-input">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">出生日期</label>
+          <input type="date" name="baby_dob" class="w-full custom-input">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">性別</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="cursor-pointer"><input type="radio" name="baby_gender" value="男" class="hidden"><div class="checkbox-tile">男 👦</div></label>
+            <label class="cursor-pointer"><input type="radio" name="baby_gender" value="女" class="hidden"><div class="checkbox-tile">女 👧</div></label>
+          </div>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">血型</label>
+          <div class="grid grid-cols-4 gap-3">
+            <label class="cursor-pointer"><input type="radio" name="blood_type" value="A" class="hidden"><div class="checkbox-tile">A 型</div></label>
+            <label class="cursor-pointer"><input type="radio" name="blood_type" value="B" class="hidden"><div class="checkbox-tile">B 型</div></label>
+            <label class="cursor-pointer"><input type="radio" name="blood_type" value="O" class="hidden"><div class="checkbox-tile">O 型</div></label>
+            <label class="cursor-pointer"><input type="radio" name="blood_type" value="AB" class="hidden"><div class="checkbox-tile">AB 型</div></label>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 三、家長聯絡資料 -->
-    <section class="bg-white rounded-3xl p-5 shadow-sm print-card border border-cream-100">
-      <div class="flex items-center gap-2 mb-4 border-b border-cream-200 pb-3">
-        <i data-lucide="phone" class="w-5 h-5 text-khaki-dark"></i>
-        <h2 class="text-lg font-bold text-warmGray">三、家長聯絡資料</h2>
+    <!-- 第三區｜家長與緊急聯絡人 -->
+    <section class="bg-white rounded-3xl p-6 md:p-8 shadow-card card-hover print-card border border-cream-100">
+      <div class="flex items-center gap-3 mb-6 border-b border-cream-200 pb-4">
+        <div class="p-2.5 bg-cream-100 text-khaki-dark rounded-xl"><i data-lucide="phone" class="w-6 h-6"></i></div>
+        <h2 class="text-xl font-bold text-warmGray">三、家長與緊急聯絡人</h2>
       </div>
-      <div class="space-y-3">
-        <div class="grid grid-cols-3 gap-2">
-          <div><label class="block text-xs font-semibold text-warmGray mb-1">主要聯絡人</label><input type="text" name="parent_name" placeholder="姓名" class="custom-input" required></div>
-          <div><label class="block text-xs font-semibold text-warmGray mb-1">關係</label><input type="text" name="parent_rel" placeholder="媽媽/爸爸" class="custom-input"></div>
-          <div><label class="block text-xs font-semibold text-warmGray mb-1">電話</label><input type="tel" name="parent_phone" placeholder="09xx..." class="custom-input" required></div>
+      <div class="space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">主要聯絡人姓名</label>
+            <input type="text" name="parent1_name" placeholder="姓名" class="w-full custom-input">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">關係</label>
+            <input type="text" name="parent1_rel" placeholder="例如：媽媽、爸爸" class="w-full custom-input">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">聯絡電話</label>
+            <input type="tel" name="parent1_phone" placeholder="09xx-xxx-xxx" class="w-full custom-input">
+          </div>
         </div>
-        <div><label class="block text-xs font-semibold text-warmGray mb-1">住家地址</label><input type="text" name="address" placeholder="完整地址" class="custom-input"></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">次要聯絡人姓名</label>
+            <input type="text" name="parent2_name" placeholder="姓名" class="w-full custom-input">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">關係</label>
+            <input type="text" name="parent2_rel" placeholder="關係" class="w-full custom-input">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">聯絡電話</label>
+            <input type="tel" name="parent2_phone" placeholder="聯絡電話" class="w-full custom-input">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">住家地址</label>
+          <input type="text" name="address" placeholder="請輸入完整住址" class="w-full custom-input">
+        </div>
       </div>
     </section>
 
-    <!-- 四、電子簽名區 -->
-    <section class="bg-white rounded-3xl p-5 shadow-sm print-card border border-cream-100">
-      <div class="flex items-center justify-between border-b border-cream-200 pb-3 mb-3">
-        <div class="flex items-center gap-2">
-          <i data-lucide="pen-tool" class="w-5 h-5 text-khaki-dark"></i>
-          <h2 class="text-lg font-bold text-warmGray">家長電子簽名</h2>
-        </div>
-        <button type="button" onclick="clearSignature()" class="text-xs text-sage-600 bg-cream-100 px-2.5 py-1 rounded-lg no-print">重簽</button>
+    <!-- 第四區｜托育準備用品 -->
+    <section class="bg-white rounded-3xl p-6 md:p-8 shadow-card card-hover print-card border border-cream-100">
+      <div class="flex items-center gap-3 mb-5 border-b border-cream-200 pb-4">
+        <div class="p-2.5 bg-cream-100 text-khaki-dark rounded-xl"><i data-lucide="briefcase" class="w-6 h-6"></i></div>
+        <h2 class="text-xl font-bold text-warmGray">四、托育準備用品確認（家長準備）</h2>
       </div>
-      <div class="border-2 border-cream-200 rounded-2xl p-1 bg-cream-50">
-        <canvas id="signature-pad" class="w-full h-36 bg-white rounded-xl"></canvas>
+      <div class="checkbox-grid">
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="奶粉" class="hidden"><div class="checkbox-tile">🍼 奶粉</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="母乳" class="hidden"><div class="checkbox-tile">🥛 母乳</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="奶瓶" class="hidden"><div class="checkbox-tile">🍼 奶瓶</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="尿布" class="hidden"><div class="checkbox-tile">👶 尿布</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="濕紙巾" class="hidden"><div class="checkbox-tile">🧻 濕紙巾</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="圍兜兜" class="hidden"><div class="checkbox-tile">👶 圍兜兜</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="備用餐服" class="hidden"><div class="checkbox-tile">👕 換洗衣物</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="安撫奶嘴" class="hidden"><div class="checkbox-tile">👶 安撫奶嘴</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="小毯子" class="hidden"><div class="checkbox-tile">🛌 蓋毯/被子</div></label>
+        <label class="cursor-pointer"><input type="checkbox" name="supplies" value="屁屁膏" class="hidden"><div class="checkbox-tile">🧴 屁屁膏</div></label>
+      </div>
+      <div class="mt-4"><input type="text" name="supplies_other" placeholder="其他自備物品補充..." class="w-full custom-input"></div>
+    </section>
+
+    <!-- 第五區｜飲食與睡眠作息 -->
+    <section class="bg-white rounded-3xl p-6 md:p-8 shadow-card card-hover print-card border border-cream-100">
+      <div class="flex items-center gap-3 mb-6 border-b border-cream-200 pb-4">
+        <div class="p-2.5 bg-cream-100 text-khaki-dark rounded-xl"><i data-lucide="clock" class="w-6 h-6"></i></div>
+        <h2 class="text-xl font-bold text-warmGray">五、飲食與睡眠作息</h2>
+      </div>
+      <div class="space-y-5">
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">主要飲食方式</label>
+          <div class="checkbox-grid">
+            <label class="cursor-pointer"><input type="checkbox" name="feeding_type" value="全母乳" class="hidden"><div class="checkbox-tile">全母乳</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="feeding_type" value="配方奶" class="hidden"><div class="checkbox-tile">配方奶</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="feeding_type" value="混合餵養" class="hidden"><div class="checkbox-tile">混合餵養</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="feeding_type" value="已吃副食品" class="hidden"><div class="checkbox-tile">已吃副食品</div></label>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">奶量與喝奶間隔</label>
+            <input type="text" name="milk_amount" placeholder="例如：150ml / 每 4 小時一次" class="w-full custom-input">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">白天小睡次數與習慣</label>
+            <input type="text" name="nap_habit" placeholder="例如：上午 1 次、下午 1 次，需抱搖" class="w-full custom-input">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-warmGray mb-2 ml-1">安撫入睡方式</label>
+          <div class="checkbox-grid">
+            <label class="cursor-pointer"><input type="checkbox" name="sleep_soothe" value="吃奶嘴" class="hidden"><div class="checkbox-tile">吃奶嘴</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="sleep_soothe" value="拍背" class="hidden"><div class="checkbox-tile">輕拍背部</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="sleep_soothe" value="聽音樂" class="hidden"><div class="checkbox-tile">聽白噪音/音樂</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="sleep_soothe" value="抱着搖" class="hidden"><div class="checkbox-tile">需要抱搖</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="sleep_soothe" value="抓小毯子" class="hidden"><div class="checkbox-tile">抱小毯子/小偶</div></label>
+            <label class="cursor-pointer"><input type="checkbox" name="sleep_soothe" value="自行入睡" class="hidden"><div class="checkbox-tile">可自行入睡</div></label>
+          </div>
+        </div>
       </div>
     </section>
-  </form>
 
-  <!-- 固定底部操作區 -->
-  <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-cream-200 p-3 z-50 no-print">
-    <div class="max-w-3xl mx-auto flex gap-2">
-      <button type="button" onclick="downloadPDF()" class="flex-1 py-3 bg-cream-200 text-warmGray font-bold rounded-xl text-sm flex items-center justify-center gap-1 active:scale-95 transition">
-        <i data-lucide="download" class="w-4 h-4"></i><span>下載 PDF</span>
-      </button>
-      <button type="button" onclick="submitForm()" class="flex-[1.5] py-3 bg-sage-500 text-white font-bold rounded-xl text-sm flex items-center justify-center gap-1 shadow-md active:scale-95 transition">
-        <i data-lucide="send" class="w-4 h-4"></i><span id="submit-btn-text">完成送出</span>
-      </button>
-    </div>
-  </div>
-
-  <script>
-    lucide.createIcons();
-    const canvas = document.getElementById('signature-pad');
-    let signaturePad;
-
-    // 自動適應手機螢幕大小與觸控
-    function initPad() {
-      if (!canvas) return;
-      const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      canvas.width = canvas.offsetWidth * ratio;
-      canvas.height = canvas.offsetHeight * ratio;
-      canvas.getContext("2d").scale(ratio, ratio);
-      signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)', penColor: 'rgb(30, 30, 30)' });
-    }
-
-    function clearSignature() { if (signaturePad) signaturePad.clear(); }
-
-    function downloadPDF() {
-      window.print();
-    }
-
-    // 表單送出處理解決方案
-    function submitForm() {
-      const form = document.getElementById('babyForm');
-      if (!form.checkValidity()) {
-        alert('請填寫必要的欄位（如寶寶姓名、主要聯絡人與電話）！');
-        return;
-      }
-      if (signaturePad && signaturePad.isEmpty()) {
-        alert('請完成家長電子簽名！');
-        return;
-      }
-
-      const btnText = document.getElementById('submit-btn-text');
-      btnText.innerText = '處理中...';
-
-      // 模擬成功送出（可防止 Google Sites 封鎖跳轉）
-      setTimeout(() => {
-        alert('資料已成功送出！感謝您的填寫。');
-        btnText.innerText = '已成功送出';
-      }, 800);
-    }
-
-    window.onload = () => { initPad(); };
-  </script>
-</body>
-</html>
-
+    <!-- 第六區｜副食品紀錄 -->
+    <section class="bg-white rounded-3xl p-6 md:p-8 shadow-card card-hover print-card border border-cream-100">
+      <div class="flex items-center gap-3 mb-3 border-b border-cream-200 pb-4">
+        <div class="p-2.5 bg-cream-100 text-khaki-dark rounded-xl"><i data-lucide="utensils" class="w-6 h-6"></i></div>
+        <div>
+          <h2 class="text-xl font-bold text-warmGray">六、副食品紀錄</h2>
+          <p class="text-sm text-khaki-dark mt-1 leading-relaxed">請勾選孩子目前已經嘗試過，且沒有過敏反應的食物。</p>
+        </div>
+      </div>
+      <div class="space-y-4 pt-3">
+        <!-- 1. 澱粉類 -->
+        <div class="border border-cream-200 rounded-2xl overflow-hidden">
+          <div class="flex items-center justify-between p-4 bg-cream-50 cursor-pointer select-none" onclick="toggleAccordion('acc_starch')">
+            <span class="text-base font-bold text-warmGray">🌾 澱粉／五穀根莖類</span>
+            <i data-lucide="chevron-down" id="acc_starchIcon" class="w-5 h-5 text-khaki transform transition-transform duration-300"></i>
+          </div>
+          <div id="acc_starch" class="accordion-content p-5 bg-white hidden">
+            <div class="checkbox-grid">
+              <label class="cursor-pointer"><input type="checkbox" name="solid_food" value="白米粥" class="hidden"><div class="checkbox-tile">白米粥</div></label>
+              <label class="cursor-pointer"><input type="checkbox" name="solid_food" value="糙米" class="hidden"><div class="checkbox-tile">糙米</div></label>
+              <label class="cursor-pointer"><input type="checkbox" name="solid_food" value="胚芽米" class="hidden"><div class="checkbox-tile">胚芽米</div></label>
+              <label class="cursor-pointer"><input type="checkbox" name="solid_food" value="十穀米" cla
